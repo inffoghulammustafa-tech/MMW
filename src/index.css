@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  body {
+    @apply antialiased overflow-hidden;
+  }
+}
+
+/* React Quill Word-Style Overrides */
+.ql-container.ql-snow {
+  border: none !important;
+  font-family: inherit;
+}
+
+.ql-editor {
+  padding: 0 !important;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.ql-editor.ql-blank::before {
+  left: 0;
+  font-style: normal;
+  opacity: 0.3;
+}
+
+/* Hide scrollbar for ribbon */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
