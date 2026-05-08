@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { 
   Plus, Minus, Maximize2, Globe, FileText,
   CheckCircle2, ChevronDown
@@ -5,7 +6,12 @@ import {
 
 export default function StatusBar() {
   return (
-    <div className="h-6 bg-[#2b579a] text-white text-[11px] flex items-center px-4 justify-between select-none">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.5 }}
+      className="h-6 bg-[#2b579a] text-white text-[11px] flex items-center px-4 justify-between select-none"
+    >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1 hover:bg-white/10 px-1 rounded cursor-pointer">
           <span>Page 1 of 1</span>
@@ -42,6 +48,6 @@ export default function StatusBar() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

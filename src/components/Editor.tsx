@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 
 export interface EditorHandle {
   format: (name: string, value: any) => void;
+  setContent: (content: string) => void;
   removeFormat: () => void;
   adjustFontSize: (delta: number) => void;
   cut: () => void;
@@ -22,8 +23,25 @@ const DocumentEditor = forwardRef<EditorHandle>((props, ref) => {
     format: (name, value) => {
       const editor = quillRef.current?.getEditor();
       if (editor) {
-        editor.format(name, value);
+        if (name === 'indent') {
+          const range = editor.getSelection();
+          if (range) {
+            const currentFormat = editor.getFormat(range);
+            const currentIndent = parseInt(currentFormat.indent || 0);
+            const newIndent = value === '+1' ? currentIndent + 1 : Math.max(0, currentIndent - 1);
+            editor.format('indent', newIndent);
+          }
+        } else if (name === 'insert-text') {
+          const range = editor.getSelection(true);
+          editor.insertText(range.index, value);
+          editor.setSelection(range.index + value.length);
+        } else {
+          editor.format(name, value);
+        }
       }
+    },
+    setContent: (content) => {
+      setValue(content);
     },
     removeFormat: () => {
       const editor = quillRef.current?.getEditor();
@@ -77,9 +95,10 @@ const DocumentEditor = forwardRef<EditorHandle>((props, ref) => {
   return (
     <div className="flex-1 bg-gray-200 overflow-y-auto p-8 flex flex-col items-center custom-scrollbar">
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white w-[816px] min-h-[1056px] shadow-xl p-[96px] mb-8 relative border border-gray-300"
+        initial={{ opacity: 0, scale: 0.98, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", damping: 15, stiffness: 100, delay: 0.2 }}
+        className="bg-white w-[816px] min-h-[1056px] shadow-xl p-[96px] mb-8 relative border border-gray-300 origin-top"
       >
         <Component 
           ref={quillRef}
@@ -91,7 +110,12 @@ const DocumentEditor = forwardRef<EditorHandle>((props, ref) => {
           className="h-full font-serif"
         />
       </motion.div>
-      <div className="w-[816px] h-4 bg-black/5 blur-md" />
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.4 }}
+        className="w-[816px] h-4 bg-black/5 blur-md" 
+      />
     </div>
   );
 });
